@@ -19,8 +19,33 @@
   }
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth body {
+  overflow: hidden;
+}
+
+
+* {
+  scroll-padding-top: 100px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+   overscroll-behavior: none;
+}
+
+.fcen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
