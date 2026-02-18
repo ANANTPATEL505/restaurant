@@ -4,10 +4,17 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
+import type { Dayjs } from "dayjs";
 
 export default function Home() {
 
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<{
+		name: string;
+		phone: string;
+		date: Dayjs | null;
+		guests: string;
+		message: string;
+	}>({
 		name: "",
 		phone: "",
 		date: null,
@@ -15,39 +22,39 @@ export default function Home() {
 		message: "",
 	});
 
-	const handleChange = (e: { target: { name: any; value: any; }; }) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
-    const formattedData = {
-        ...formData,
-        date: formData.date
-            ? formData.date.format("DD/MM/YYYY hh:mm A")
-            : "",
-    };
+		const formattedData = {
+			...formData,
+			date: formData.date
+				? formData.date.format("DD/MM/YYYY hh:mm A")
+				: "",
+		};
+		console.log(formattedData);
+		try {
+			const res = await fetch("/api/whatsapp", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formattedData),
+			});
 
-    try {
-        const res = await fetch("/api/whatsapp", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formattedData),
-        });
+			const data = await res.json();
+			console.log("API Response:", data);
 
-        const data = await res.json();
-        console.log("API Response:", data);
+			alert("Booking Sent Successfully ✅");
 
-        alert("Booking Sent Successfully ✅");
-
-    } catch (err) {
-        console.error("Error sending booking:", err);
-        alert("Failed to send booking ❌");
-    }
-};
+		} catch (err) {
+			console.error("Error sending booking:", err);
+			alert("Failed to send booking ❌");
+		}
+	};
 	const temp = [
 		{ src: "/web4.jpg", num: "01", title: "AN UNFORGETTABLE AMBIENCE", desc: "Step into a warm, elegant space designed for comfort and connection. From intimate dinners to family gatherings, our atmosphere blends modern design with cozy charm to create the perfect dining experience." },
 		{ src: "/web5.webp", num: "02", title: "FRESH & AUTHENTIC INGREDIENTS", desc: "We carefully select the finest ingredients to ensure every dish is fresh, flavorful, and beautifully presented. Our chefs combine tradition and creativity to craft meals that satisfy both the eyes and the palate." },
@@ -751,7 +758,7 @@ export default function Home() {
 								preserveAspectRatio="none"
 							>
 								{/* Right (burgundy) side fills with wave edge on the left */}
-								<path 
+								<path
 									fill="#800020"
 									d="M28,0 
                  C42,25 14,50 28,75 
