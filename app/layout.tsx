@@ -26,17 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en ">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <SmoothScroll>
-           <ParallaxWrapper>
-        {children}
-      </ParallaxWrapper>
+          <ParallaxWrapper>
+            <div className="hide-scrollbar">
+              {children}
+            </div>
+
+          </ParallaxWrapper>
         </SmoothScroll>
-       
-        
+
+
       </body>
     </html>
   );

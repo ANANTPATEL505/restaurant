@@ -1,43 +1,104 @@
 "use client";
 import { Parallax } from "react-scroll-parallax";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useState } from "react";
 
 export default function Home() {
 
-  const temp = [
-    { src: "/p1.jpg", num: "01", title: "BEAUTIFUL PLACE", desc: "Our wines are mainly from regional winegrowers. There is something for every taste. Mon Petit pays attention to local products. If it is not regional, it is at least from small businesses that value it and do it with love, passion and good craftsmanship." },
-    { src: "/p2.jpg", num: "02", title: "FEEL THE COFFEE", desc: "Mon Petit Cafe attaches great importance to quality and uniqueness. We work with small manufactories. We maintain a good relationship with all our suppliers, winemakers, brewers and roasters personally. We only work with a high-quality portafilter coffee machine and our coffee is roasted in Stuttgart. In addition, we offer international coffee specialties." },
-    { src: "/p3.jpg", num: "03", title: "FULL TASTE", desc: "Our passion is craft beer. We always offer a changing selection of local, German and international beers." }
-  ];
+	const [formData, setFormData] = useState({
+		name: "",
+		phone: "",
+		date: null,
+		guests: "",
+		message: "",
+	});
 
-  const box = [
-    { src: "/b1.png", title: "hello world" },
-    { src: "/b2.jpeg", title: "hello world" },
-    { src: "/b3.jpg", title: "hello world" },
-    { src: "/b4.jpg", title: "hello world" },
-  ];
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
 
-  return (
-    <main>
+	const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      {/* HERO SECTION */}
-      <section className="relative w-full overflow-hidden">
+    const formattedData = {
+        ...formData,
+        date: formData.date
+            ? formData.date.format("DD/MM/YYYY hh:mm A")
+            : "",
+    };
 
-        <Parallax speed={-20} className="absolute inset-0 h-screen">
-          <img src="/cafe.jpg" className="w-full h-full object-cover" />
-        </Parallax>
-      
-        <div className="relative z-20 h-screen flex items-center justify-center text-center px-4">
-          <h1 className="text-white font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl">
-            IMPORTANCE OF COFFEE
-          </h1>
-        </div>
+    try {
+        const res = await fetch("/api/whatsapp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formattedData),
+        });
 
-        <svg
-          viewBox="0 0 1920 26"
-          className="block absolute bottom-0 left-0 w-full h-7"
-          preserveAspectRatio="none"
-        >
-          <path fill="#fffbeb" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
+        const data = await res.json();
+        console.log("API Response:", data);
+
+        alert("Booking Sent Successfully ✅");
+
+    } catch (err) {
+        console.error("Error sending booking:", err);
+        alert("Failed to send booking ❌");
+    }
+};
+	const temp = [
+		{ src: "/web4.jpg", num: "01", title: "AN UNFORGETTABLE AMBIENCE", desc: "Step into a warm, elegant space designed for comfort and connection. From intimate dinners to family gatherings, our atmosphere blends modern design with cozy charm to create the perfect dining experience." },
+		{ src: "/web5.webp", num: "02", title: "FRESH & AUTHENTIC INGREDIENTS", desc: "We carefully select the finest ingredients to ensure every dish is fresh, flavorful, and beautifully presented. Our chefs combine tradition and creativity to craft meals that satisfy both the eyes and the palate." },
+		{ src: "/web3.avif", num: "03", title: "FLAVORS THAT INSPIRE", desc: "Our menu celebrates bold flavors and culinary artistry. From signature dishes to seasonal specials, every plate is prepared with passion, precision, and a love for great food." }
+	];
+
+	const box = [
+		{ src: "/i1.png", title: "Natural Ingredients" },
+		{ src: "/i2.png", title: "Fast Service" },
+		{ src: "/i3.png", title: "Hygienic Kitchen" },
+		{ src: "/i4.png", title: "Expert Chefs" },
+	];
+
+	const services = [
+		{ src: "/i5.png", title: "BIRTHDAY PARTIES", desc: "Celebrate your special moments with us. Our dedicated team ensures a memorable experience for every birthday celebration." },
+		{ src: "/i6.png", title: "BUSINESS MEETINGS", desc: "Host your corporate events in our elegant and professional setting. We provide a comfortable environment for productive meetings and networking." },
+		{ src: "/i7.png", title: "WEDDING RECEPTIONS", desc: "Make your wedding day unforgettable with our exquisite dining and impeccable service. We create a magical atmosphere for your special celebration." },
+
+	]
+
+	return (
+		<main className="bg-white">
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+
+
+
+				{/* HERO SECTION */}
+				<section className="relative w-full  overflow-hidden">
+
+					<Parallax speed={-20} className="absolute inset-0 h-screen">
+						<img src="/web1.jpg" className="w-full h-full object-cover" />
+					</Parallax>
+
+					<div className="relative z-20 h-screen flex items-center justify-center text-center px-4">
+						<div className="fcen flex-col gap-10 ">
+							<h1 className="text-white  font-bold text-4xl w-2/3 font-sans sm:text-6xl md:text-7xl lg:text-7xl">
+								WELLCOME TO RESTAURSNT
+							</h1>
+							<button className=" bg-[#800020] text-white px-5 py-2 rounded-lg">
+								Look menu
+							</button>
+						</div>
+
+					</div>
+
+					<svg
+						viewBox="0 0 1920 26"
+						className="block absolute bottom-0 left-0 w-full h-7 -mb-px"
+						preserveAspectRatio="none"
+					>
+						<path fill="#fff" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
 	c-1.992-1.974-5.01-1.6-7.448-2.713c-0.417,0.074-0.441,0.997-1.238,0.33c-0.103-0.113-0.323-0.356-1.033-1.142
 	c-0.492,0.938-0.948,1.805-1.409,2.683c-2.1-2.389-5.174,0.159-7.012-2.03c-0.991,1.465-3.179,0.306-4.117,1.874
 	c-0.5-0.379-0.778-1.019-1.599-0.989c-3.682,0.135-6.783,2.202-10.129,2.986c-2.646-2.246-6.298,0.391-8.975-2.322
@@ -163,54 +224,54 @@ export default function Home() {
 	c-4.955,1.452-9.135-1.267-13.568-0.623c-4.48,0.649-8.601-1.6-12.961-1.979c0,2.838,0,5.29,0,7.976c341.006,0,681.882,0,1022.758,0
 	c14.494,0,28.988-0.069,43.481-0.015c3.862,0.015,5.46-0.053,5.55-0.188c283.215,0,565.436,0,847.625,0c0-6.655,0-13.224,0-19.867
 	C1915.898,10.076,1910.912,9.958,1906.688,12.029z" />
-        </svg>
+					</svg>
 
-      </section>
+				</section>
 
-      {/* COFFEE BASE SECTION */}
-      <section className="bg-[#fffbeb] py-16 px-6 md:px-20">
+				{/* COFFEE BASE SECTION */}
+				<section className="bg-white py-16 px-6 md:px-20">
 
-        <h2 className="text-amber-950 text-3xl md:text-4xl font-bold text-center mb-12">
-          COFFEE BUILD YOUR BASE
-        </h2>
+					<h2 className="text-[#800020] text-3xl md:text-4xl font-bold text-center mb-12">
+						DINE. RELAX. ENJOY.
+					</h2>
 
-        <div className="grid gap-10 md:grid-cols-3">
+					<div className="grid gap-10 md:grid-cols-3">
 
-          {temp.map((item, index) => (
-            <div key={index} className="flex flex-col gap-5">
+						{temp.map((item, index) => (
+							<div key={index} className="flex flex-col gap-5">
 
-              <img
-                src={item.src}
-                className="w-full h-60 object-cover rounded-lg"
-              />
+								<img
+									src={item.src}
+									className="w-full h-60 object-cover rounded-lg"
+								/>
 
-              <div className="flex gap-4 items-center">
-                <span className="text-4xl md:text-5xl text-[#c7a17a] font-serif">
-                  {item.num}
-                </span>
-                <span className="text-xl md:text-2xl font-bold text-amber-950">
-                  {item.title}
-                </span>
-              </div>
+								<div className="flex gap-4 items-center">
+									<span className="text-3xl md:text-4xl text-[#800020] font-serif">
+										{item.num}
+									</span>
+									<span className="text-xl md:text-lg font-bold text-[#800020]">
+										{item.title}
+									</span>
+								</div>
 
-              <p className="text-gray-600 text-sm md:text-base">
-                {item.desc}
-              </p>
+								<p className="text-[#2B2B2B] text-sm md:text-base">
+									{item.desc}
+								</p>
 
-            </div>
-          ))}
+							</div>
+						))}
 
-        </div>
-      </section>
+					</div>
+				</section>
 
-      {/* PARALLAX IMAGE SECTION */}
-      <section className="relative bg-[#fffbeb] min-h-screen md:h-screen overflow-hidden flex items-center justify-center">
-        <svg
-          viewBox="0 0 1920 27"
-          className="block absolute z-10 top-0 left-0 w-full h-7 -mt-px rotate-180"
-          preserveAspectRatio="none"
-        >
-          <path fill="#fffbeb" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
+				{/* PARALLAX IMAGE SECTION */}
+				<section className="relative bg-[#fffbeb] min-h-screen md:h-screen overflow-hidden flex items-center justify-center">
+					<svg
+						viewBox="0 0 1920 27"
+						className="block absolute z-10 top-0 left-0 w-full h-7 -mt-px rotate-180"
+						preserveAspectRatio="none"
+					>
+						<path fill="#fff" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
 	c-1.992-1.974-5.01-1.6-7.448-2.713c-0.417,0.074-0.441,0.997-1.238,0.33c-0.103-0.113-0.323-0.356-1.033-1.142
 	c-0.492,0.938-0.948,1.805-1.409,2.683c-2.1-2.389-5.174,0.159-7.012-2.03c-0.991,1.465-3.179,0.306-4.117,1.874
 	c-0.5-0.379-0.778-1.019-1.599-0.989c-3.682,0.135-6.783,2.202-10.129,2.986c-2.646-2.246-6.298,0.391-8.975-2.322
@@ -336,22 +397,22 @@ export default function Home() {
 	c-4.955,1.452-9.135-1.267-13.568-0.623c-4.48,0.649-8.601-1.6-12.961-1.979c0,2.838,0,5.29,0,7.976c341.006,0,681.882,0,1022.758,0
 	c14.494,0,28.988-0.069,43.481-0.015c3.862,0.015,5.46-0.053,5.55-0.188c283.215,0,565.436,0,847.625,0c0-6.655,0-13.224,0-19.867
 	C1915.898,10.076,1910.912,9.958,1906.688,12.029z" />
-        </svg>
+					</svg>
 
-        <Parallax speed={-20} className="absolute inset-0">
-          <img src="/222.jpg" className="w-full h-full object-cover" />
-        </Parallax>
+					<Parallax speed={-30} className="absolute inset-0">
+						<img src="/web6.gif" className="w-full h-full object-cover" />
+					</Parallax>
 
-        <h2 className="absolute z-10 top-65 text-white text-3xl md:text-6xl text-center px-4">
-          Welcome, Anant Patel
-        </h2>
+					<h2 className="absolute z-10 top-65 text-amber-50 text-3xl md:text-6xl text-center px-4">
+						A TASTE YOU’LL NEVER FORGET
+					</h2>
 
-        <svg
-          viewBox="0 0 1920 27"
-          className="block absolute z-20 bottom-50 left-0 w-full h-7 -mb-px "
-          preserveAspectRatio="none"
-        >
-          <path fill="#fff" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
+					<svg
+						viewBox="0 0 1920 27"
+						className="block absolute z-20 bottom-50 left-0 w-full h-7 -mb-px "
+						preserveAspectRatio="none"
+					>
+						<path fill="#fff" d="M1906.688,12.029c-1.653-1.78-3.943-0.347-5.823-0.883c-0.623,0.442-0.879,1.208-1.873,1.044
 	c-1.992-1.974-5.01-1.6-7.448-2.713c-0.417,0.074-0.441,0.997-1.238,0.33c-0.103-0.113-0.323-0.356-1.033-1.142
 	c-0.492,0.938-0.948,1.805-1.409,2.683c-2.1-2.389-5.174,0.159-7.012-2.03c-0.991,1.465-3.179,0.306-4.117,1.874
 	c-0.5-0.379-0.778-1.019-1.599-0.989c-3.682,0.135-6.783,2.202-10.129,2.986c-2.646-2.246-6.298,0.391-8.975-2.322
@@ -477,46 +538,316 @@ export default function Home() {
 	c-4.955,1.452-9.135-1.267-13.568-0.623c-4.48,0.649-8.601-1.6-12.961-1.979c0,2.838,0,5.29,0,7.976c341.006,0,681.882,0,1022.758,0
 	c14.494,0,28.988-0.069,43.481-0.015c3.862,0.015,5.46-0.053,5.55-0.188c283.215,0,565.436,0,847.625,0c0-6.655,0-13.224,0-19.867
 	C1915.898,10.076,1910.912,9.958,1906.688,12.029z" />
-        </svg>
+					</svg>
 
-      </section>
+				</section>
 
-      {/* ICON BOX SECTION */}
-      <section className="bg-white relative bottom-50 h-[40vh] lg:h-[30vh] py-16 px-6 md:px-20">
+				{/* ICON BOX SECTION */}
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-10 text-center">
-          {box.map((item, index) => (
-            <div key={index} className="flex flex-col items-center gap-4">
-              <img src={item.src} className="h-16 md:h-20 object-contain" />
-              <span className="text-base md:text-lg">{item.title}</span>
-            </div>
-          ))}
-        </div>
 
-      </section>
+				{/* SPLIT SECTION */}
+				<section className="bg-white relative z-10 bottom-50 flex flex-col gap-10 py-16 px-6 md:px-20">
 
-      {/* SPLIT SECTION */}
-      <section className="bg-white relative bottom-50 py-16 px-6 md:px-20">
+					<div className="relative top-15 grid grid-cols-2 sm:grid-cols-4 gap-10 text-center">
+						{box.map((item, index) => (
+							<div key={index} className="flex flex-col items-center gap-4">
+								<img src={item.src} className="h-16 md:h-20 object-contain" />
+								<span className="text-[#800020] md:text-lg">{item.title}</span>
+							</div>
+						))}
+					</div>
 
-        <div className="flex flex-col md:flex-row min-h-[70vh]">
+					<div className="relative top-40 flex flex-col z-10 md:flex-row min-h-[70vh]">
 
-          <div className="bg-[#c7a17a] md:w-1/2 p-10 flex flex-col justify-center gap-6">
-            <h3 className="text-2xl md:text-3xl font-bold">
-              TASTE THE BEST DRINKS IN TOWN
-            </h3>
-            <p className="text-base md:text-lg">
-              Mon Petit pays attention to local products. If it's not local,
-              then it's from small businesses that do it with love.
-            </p>
-          </div>
+						<div className="bg-[#800020] md:w-1/2 p-12 md:pt-20 text-white flex flex-col gap-6">
+							<h3 className="text-2xl md:text-3xl md:w-1/2 font-bold">
+								TASTE THE BEST DISHES IN TOWN
+							</h3>
+							<p className="text-base md:text-base md:w-3/4">
+								We believe exceptional dining starts with quality ingredients and expert craftsmanship. Every recipe is thoughtfully prepared to deliver rich flavors and memorable moments at your table.
+							</p>
+						</div>
 
-          <div className="md:w-1/2 h-64 md:h-auto">
-            <img src="/p4.jpg" className="w-full h-full object-cover" />
-          </div>
+						<div className="md:w-1/2 h-64 md:h-auto">
+							<img src="/web2.jpg" className="w-full h-full object-cover" />
+						</div>
 
-        </div>
+					</div>
 
-      </section>
-    </main>
-  );
+					<div className="relative flex flex-col top-60 right-0 bg-white  w-full">
+
+						<h2 className="text-[#800020] text-3xl md:text-4xl  font-bold text-center mb-12">
+							Catering Services
+						</h2>
+
+						<div className="sm:flex px-10">
+							{services.map((item, index) => (
+								<div key={index} className="flex flex-col items-center  gap-4 py-10 sm:px-10 ">
+
+									<img src={item.src} className="h-16 md:h-20 object-contain" />
+									<h3 className="text-lg text-center font-bold text-[#800020]">{item.title}</h3>
+									<p className="text-sm text-center text-gray-600 px-">{item.desc}</p>
+
+								</div>
+							))}
+						</div>
+
+					</div>
+
+				</section>
+
+
+				<section className="bg-white flex items-center justify-center min-h-screen md:min-h-[90vh] md:px-20 xl:px-40 md:py-20 px-6 py-10">
+
+					<div className="h-full relative w-full flex flex-col md:flex-row rounded-3xl overflow-hidden border-[3px] border-[#800020]">
+
+						{/* LEFT SIDE */}
+						<div className="bg-white text-[#800020] md:pr-10 flex-1 flex items-center justify-center text-2xl font-bold z-10">
+							<form
+								onSubmit={handleSubmit}
+								className="w-full max-w-lg px-6 md:px-15 py-8 rounded-3xl space-y-5"
+							>
+								<h2 className="text-3xl font-bold text-center text-[#800020]">
+									Reserve Your Table
+								</h2>
+
+								{/* Name */}
+								<div className="flex flex-col text-sm">
+									<input
+										type="text"
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										placeholder="Enter your name"
+										className="border border-[#800020] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#800020]"
+										required
+									/>
+								</div>
+
+								{/* Phone */}
+								<div className="flex flex-col text-sm">
+									<input
+										type="tel"
+										name="phone"
+										value={formData.phone}
+										onChange={handleChange}
+										placeholder="Enter phone number"
+										className="border border-[#800020] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#800020]"
+										required
+									/>
+								</div>
+
+								{/* Date */}
+								<div className="flex flex-col text-sm">
+									<DateTimePicker
+										label="Select booking date"
+										value={formData.date}
+										onChange={(newValue) =>
+											setFormData({ ...formData, date: newValue })
+										}
+										format="DD/MM/YYYY hh:mm A"
+										slotProps={{
+											textField: {
+												fullWidth: true,
+												InputProps: {
+													sx: {
+														"& .MuiSvgIcon-root": {
+															color: "#800020",
+														},
+														"& fieldset": {
+															borderRadius: "12px",
+															borderColor: "#800020",
+														},
+														"&:hover fieldset": {
+															borderColor: "#800020",
+														},
+														"&.Mui-focused fieldset": {
+															borderColor: "#800020",
+														},
+													},
+												},
+												InputLabelProps: {
+													sx: {
+														color: "#800020",
+														"&.Mui-focused": { color: "#800020" },
+													},
+												},
+											},
+										}}
+									/>
+								</div>
+
+								{/* Guests */}
+								<div className="flex flex-col text-sm">
+									<select
+										name="guests"
+										value={formData.guests}
+										onChange={handleChange}
+										className="border border-[#800020] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#800020]"
+										required
+									>
+										<option value="">Select Guests</option>
+										<option>1 Person</option>
+										<option>2 People</option>
+										<option>3 People</option>
+										<option>4 People</option>
+										<option>5+ People</option>
+									</select>
+								</div>
+
+								{/* Special Request */}
+								<div className="flex flex-col text-sm">
+									<textarea
+										name="message"
+										value={formData.message}
+										onChange={handleChange}
+										placeholder="Birthday, Anniversary, Window seat..."
+										rows={3}
+										className="border border-[#800020] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#800020]"
+									/>
+								</div>
+
+								{/* Submit Button */}
+								<button
+									type="submit"
+									className="w-full bg-[#800020] text-white py-3 rounded-2xl hover:bg-[#5a0016] transition duration-300 text-lg"
+								>
+									Book Table
+								</button>
+							</form>
+						</div>
+
+						{/* HORIZONTAL WAVE — Mobile only (between top & bottom) */}
+						<div className="relative h-14 md:hidden z-20">
+							{/* White fills from top into the wave */}
+							<svg
+								viewBox="0 0 1440 56"
+								className="absolute top-0 left-0 w-full h-full"
+								preserveAspectRatio="none"
+							>
+								<path
+									fill="#fff"
+									d="M0,0 C240,56 480,0 720,28 C960,56 1200,0 1440,28 L1440,0 Z"
+								/>
+							</svg>
+							{/* Burgundy fills from bottom into the wave */}
+							<svg
+								viewBox="0 0 1440 56"
+								className="absolute bottom-0 left-0 w-full h-full"
+								preserveAspectRatio="none"
+							>
+								<path
+									fill="#800020"
+									d="M0,56 C240,0 480,56 720,28 C960,0 1200,56 1440,28 L1440,56 Z"
+								/>
+							</svg>
+						</div>
+
+						{/* VERTICAL WAVE — Desktop only (between left & right) */}
+						<div className="absolute inset-y-0 left-1/2  -translate-x-1/2 md:z-0 lg:z-20 z-20 hidden md:block w-40">
+							<svg
+								viewBox="0 0 56 200"
+								className="h-full w-full bg-white"
+								preserveAspectRatio="none"
+							>
+								{/* Right (burgundy) side fills with wave edge on the left */}
+								<path 
+									fill="#800020"
+									d="M28,0 
+                 C42,25 14,50 28,75 
+                 C42,100 14,125 28,150 
+                 C42,175 28,200 28,200 
+                 L56,200 L56,0 Z"
+								/>
+							</svg>
+						</div>
+
+						{/* RIGHT SIDE */}
+						<div className="bg-[#800020] text-white flex flex-col items-center md:items-end text-center md:text-left px-8 md:px-15 py-10 md:pt-15 gap-6 w-full md:w-1/2 z-10">
+
+							<h3 className="flex flex-col  text-2xl md:text-3xl md:w-3/4 font-bold">
+								<a>BOOK YOUR</a>
+								<a>DINING EXPERIENCE</a>
+							</h3>
+
+							<p className="text-base md:text-sm md:w-3/4 text-left">
+								Secure your seat at the table and let us take care of the rest. From intimate evenings to grand celebrations, reserve online and experience flawless service, warm hospitality, and unforgettable flavors.
+							</p>
+						</div>
+
+					</div>
+				</section>
+
+				<footer className="bg-[#800020] px-6 md:px-20 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-white">
+
+
+					<div className="flex flex-col gap-6 text-lg font-bold">
+						OPEN HOURS
+						<div className="flex gap-10 font-normal  text-sm">
+							<div className="flex flex-col gap-2">
+								<a>MONDAY</a>
+								<a>TUESDAY</a>
+								<a>WEDNESDAY</a>
+								<a>THURSDAY</a>
+								<a>FRIDAY</a>
+								<a>SATURDAY</a>
+								<a>SUNDAY</a>
+							</div>
+							<div className="flex flex-col gap-2">
+								<a>10 AM - 10 PM</a>
+								<a>10 AM - 10 PM</a>
+								<a>10 AM - 10 PM</a>
+								<a>10 AM - 10 PM</a>
+								<a>10 AM - 11 PM</a>
+								<a>10 AM - 11 PM</a>
+								<a>10 AM - 9 PM</a>
+							</div>
+						</div>
+					</div>
+
+					<div className="flex md:flex-col  text-lg md:gap-7 gap-12 font-bold ">
+						<div className="h-1/2 gap-4 flex flex-col">
+							<div className="">CONTACT US</div>
+							<div className="flex flex-col gap-2 font-normal text-sm">
+								<a>anant3163@gmail.com</a>
+								<a>+91 1234567890</a>
+							</div>
+						</div>
+
+						<div className="h-1/2 gap-4 flex flex-col">
+							<div>SOCIALS</div>
+							<div className="flex gap-4 font-normal text-sm">
+								<img src="/whatsapp.png" className="h-5 object-contain" />
+								<img src="/facebook.png" className="h-5 object-contain" />
+								<img src="/instagram.png" className="h-5 object-contain" />
+								<img src="/twitter.png" className="h-5 object-contain" />
+							</div>
+						</div>
+					</div>
+
+					<div className="flex flex-col text-lg gap-4 font-bold ">
+						<div>ADDRESS</div>
+						<div className="flex flex-col gap-2 font-normal text-sm">
+							<a>123 Main Street</a>
+							<a>City Road, Town</a>
+							<a>Surat, Gujarat</a>
+							<a>ZIP 394107</a>
+						</div>
+					</div>
+
+					<div className="h-64 md:h-full w-full rounded-2xl"
+					>
+						<iframe
+							className="h-full w-full rounded-2xl"
+							src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4686.560615867984!2d72.84078136320618!3d21.203050738231845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04ef9dc913593%3A0x96106052132786c3!2sSurat!5e0!3m2!1sen!2sin!4v1770273457727!5m2!1sen!2sin"
+							loading="lazy"
+							referrerPolicy="no-referrer-when-downgrade"
+						/>
+					</div>
+
+				</footer>
+
+			</LocalizationProvider>
+		</main>
+	);
 }
