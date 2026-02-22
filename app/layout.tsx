@@ -1,6 +1,9 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ParallaxWrapper from "./wrapper";
+import SmoothScroll from "./SmoothScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +28,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        {children}
+        <SmoothScroll>
+          <ParallaxWrapper>
+            <div className="hide-scrollbar">
+              {children}
+            </div>
+
+          </ParallaxWrapper>
+        </SmoothScroll>
+
+
       </body>
     </html>
   );
