@@ -20,7 +20,7 @@ export async function POST(req) {
             `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_ID}/messages`,
             {
                 messaging_product: "whatsapp",
-                to: "917990898234", // your number
+                to: "", // your number
                 type: "text",
                 text: { body: textMessage },
             },
