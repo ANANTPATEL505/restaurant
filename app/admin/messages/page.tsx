@@ -99,7 +99,7 @@ export default function AdminMessagesPage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 text-[#800020]"
               >
                 <div className="bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl">
                   <div className="flex items-center justify-between mb-6">

@@ -35,18 +35,34 @@ const mockMonthly = [
 ];
 
 export default function AnalyticsPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [data, setData] = useState<any>(null);
   const [period, setPeriod] = useState("week");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/stats").then(r => r.json()).then(setStats).catch(() => {});
+    fetch("/api/stats")
+      .then(r => r.json())
+      .then(result => {
+        setData(result);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, []);
 
+  const stats = data?.stats || {};
+  const charts = data?.charts || {};
+  
+  // Calculate total reservations count
+  const totalReservations = data?.recent?.reservations?.length || 0;
+
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="bg-white border-b px-8 py-5 sticky top-0 z-10 flex items-center justify-between">
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className="bg-white border-b px-8 py-5 flex items-center justify-between shrink-0">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Analytics</h1>
             <p className="text-gray-400 text-sm">Business performance overview</p>
@@ -66,14 +82,15 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-8 space-y-8">
           {/* KPI Summary */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { label: "Total Revenue", value: `₹${((stats?.stats?.totalRevenue || 214000) / 1000).toFixed(0)}K`, change: "+12.4%", up: true },
-              { label: "Total Orders", value: stats?.stats?.totalOrders || "1,284", change: "+8.2%", up: true },
-              { label: "Reservations", value: stats?.stats?.totalReservations || "432", change: "+5.7%", up: true },
-              { label: "Avg Order Value", value: "₹847", change: "-2.1%", up: false },
+              { label: "Total Revenue", value: `₹${((stats?.totalRevenue || 0) / 1000).toFixed(0)}K`, change: "+12.4%", up: true },
+              { label: "Total Orders", value: stats?.totalOrders || "—", change: "+8.2%", up: true },
+              { label: "Reservations", value: totalReservations || "—", change: "+5.7%", up: true },
+              { label: "Menu Items", value: stats?.totalMenuItems || "—", change: "-2.1%", up: false },
             ].map((kpi, i) => (
               <motion.div key={kpi.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">{kpi.label}</p>
@@ -101,7 +118,6 @@ export default function AnalyticsPage() {
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
-
           <div className="grid lg:grid-cols-2 gap-6">
             {/* Sales by Category */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
@@ -109,19 +125,19 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-8">
                 <ResponsiveContainer width={180} height={180}>
                   <PieChart>
-                    <Pie data={mockCategories} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                      {mockCategories.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                    <Pie data={charts.categoryBreakdown?.length ? charts.categoryBreakdown : mockCategories} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ value }) => `${value}`} labelLine={false}>
+                      {(charts.categoryBreakdown || mockCategories).map((_, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex flex-col gap-3 flex-1">
-                  {mockCategories.map((cat, i) => (
-                    <div key={cat.name} className="flex items-center justify-between text-sm">
+                  {(charts.categoryBreakdown || mockCategories).slice(0, 5).map((cat: any, i: number) => (
+                    <div key={cat.name || cat.category} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ background: COLORS[i] }} />
-                        <span className="text-gray-600">{cat.name}</span>
+                        <div className="w-3 h-3 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
+                        <span className="text-gray-600">{cat.name || cat.category}</span>
                       </div>
-                      <span className="font-bold text-gray-900">{cat.value}%</span>
+                      <span className="font-bold text-gray-900">{cat.value}</span>
                     </div>
                   ))}
                 </div>
@@ -178,6 +194,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
           </motion.div>
+        </div>
         </div>
       </main>
     </div>

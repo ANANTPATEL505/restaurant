@@ -58,7 +58,7 @@ export default function AdminSettingsPage() {
           </motion.button>
         </div>
 
-        <div className="p-8 max-w-3xl">
+        <div className="p-8 max-w-3xl text-[#800020]">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6">
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-4 pb-3 border-b">Restaurant Info</h3>
