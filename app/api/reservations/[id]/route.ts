@@ -3,18 +3,31 @@ import { prisma } from "@/prisma/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/prisma/lib/auth";
 
-type RouteContext = { params: Promise<{ id: string }> };
+type Context = { params: Promise<{ id: string }> };
 
-export async function PUT(req: NextRequest, context: RouteContext) {
+export async function PUT(req: NextRequest, context: Context) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await context.params;
     const body = await req.json();
+
+    // If assigning a new table, resolve tableNo
+    const data: any = { ...body };
+    if (body.tableId !== undefined) {
+      if (body.tableId) {
+        const table = await prisma.table.findUnique({ where: { id: body.tableId }, select: { number: true } });
+        data.tableNo = table?.number ?? null;
+      } else {
+        data.tableNo = null;
+      }
+    }
+
     const reservation = await prisma.reservation.update({
       where: { id },
-      data: body,
+      data,
+      include: { table: true },
     });
     return NextResponse.json(reservation);
   } catch {
@@ -22,7 +35,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
   }
 }
 
-export async function DELETE(_: NextRequest, context: RouteContext) {
+export async function DELETE(_: NextRequest, context: Context) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

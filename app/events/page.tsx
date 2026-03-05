@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { FaCalendar, FaMapMarkerAlt, FaTicketAlt, FaUsers } from "react-icons/fa";
+import Link from "next/link";
 
 const staticEvents = [
   {
@@ -120,14 +121,16 @@ function EventCard({ event, delay }: { event: typeof staticEvents[0]; delay: num
           </div>
         )}
 
+        <Link href={"/contact"} className="mt-2 py-3 flex justify-center bg-[#800020] text-white rounded-2xl font-semibold text-sm hover:bg-[#5a0016] transition-all disabled:opacity-50 disabled:cursor-not-allowed  ">
         <motion.button
           whileTap={{ scale: 0.97 }}
           disabled={seatsLeft === 0}
-          className="mt-2 py-3 bg-[#800020] text-white rounded-2xl font-semibold text-sm hover:bg-[#5a0016] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="flex gap-2 items-center justify-center"
         >
           <FaTicketAlt />
           {seatsLeft === 0 ? "Sold Out" : "Book Event"}
         </motion.button>
+        </Link>
       </div>
     </motion.div>
   );

@@ -24,6 +24,27 @@ async function main() {
   // Clear existing data
   await prisma.menuItem.deleteMany({});
 
+  // Tables
+  await prisma.table.deleteMany({});
+  const tablesData = [
+    { number: 1,  capacity: 2, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 2,  capacity: 2, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 3,  capacity: 4, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 4,  capacity: 4, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 5,  capacity: 4, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 6,  capacity: 6, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 7,  capacity: 6, location: "Indoor",  status: "AVAILABLE" as const },
+    { number: 8,  capacity: 8, location: "Private", status: "AVAILABLE" as const },
+    { number: 9,  capacity: 8, location: "Private", status: "AVAILABLE" as const },
+    { number: 10, capacity: 4, location: "Outdoor", status: "AVAILABLE" as const },
+    { number: 11, capacity: 4, location: "Outdoor", status: "AVAILABLE" as const },
+    { number: 12, capacity: 2, location: "Bar",     status: "AVAILABLE" as const },
+    { number: 13, capacity: 2, location: "Bar",     status: "AVAILABLE" as const },
+    { number: 14, capacity: 10, location: "Private", status: "MAINTENANCE" as const },
+  ];
+  await prisma.table.createMany({ data: tablesData });
+  console.log("✅ Tables seeded (14 tables)");
+
   // Menu items
   const menuItems = [
     { name: "Bruschetta", description: "Grilled bread with fresh tomatoes, basil, and olive oil drizzle.", price: 299, category: "Starters", veg: true, spicy: false, featured: false, available: true },

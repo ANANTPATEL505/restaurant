@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
     const reservations = await prisma.reservation.findMany({
       where,
       orderBy: { date: "asc" },
+      include: { table: { select: { id: true, number: true, capacity: true, location: true } } },
     });
 
     return NextResponse.json(reservations);
@@ -36,10 +37,33 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, phone, email, date, guests, message } = body;
+    const { name, phone, email, date, guests, message, tableId } = body;
 
     if (!name || !phone || !date || !guests) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Validate table still available if one was chosen
+    if (tableId) {
+      const windowStart = new Date(new Date(date).getTime() - 2 * 60 * 60 * 1000);
+      const windowEnd = new Date(new Date(date).getTime() + 2 * 60 * 60 * 1000);
+      const conflict = await prisma.reservation.findFirst({
+        where: {
+          tableId,
+          status: { in: ["PENDING", "CONFIRMED"] },
+          date: { gte: windowStart, lte: windowEnd },
+        },
+      });
+      if (conflict) {
+        return NextResponse.json({ error: "This table was just taken. Please select another." }, { status: 409 });
+      }
+    }
+
+    // Resolve tableNo from tableId
+    let tableNo: number | undefined;
+    if (tableId) {
+      const t = await prisma.table.findUnique({ where: { id: tableId }, select: { number: true } });
+      tableNo = t?.number;
     }
 
     const reservation = await prisma.reservation.create({
@@ -51,7 +75,10 @@ export async function POST(req: NextRequest) {
         guests: parseInt(guests),
         message,
         status: "PENDING",
+        tableId: tableId || null,
+        tableNo: tableNo ?? null,
       },
+      include: { table: true },
     });
 
     // WhatsApp notification
@@ -61,7 +88,7 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: process.env.WHATSAPP_PHONE,
-          message: `New Reservation!\nName: ${name}\nPhone: ${phone}\nDate: ${new Date(date).toLocaleString()}\nGuests: ${guests}\nNote: ${message || "None"}`,
+          message: `New Reservation!\nName: ${name}\nPhone: ${phone}\nDate: ${new Date(date).toLocaleString()}\nGuests: ${guests}\nTable: ${tableNo ? `#${tableNo}` : "Any"}\nNote: ${message || "None"}`,
         }),
       }).catch(console.error);
     }

@@ -54,33 +54,25 @@ function StatCard({ icon: Icon, title, value, sub, color, delay }: any) {
 }
 
 export default function AdminDashboard() {
-  const [data, setData] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/stats")
       .then(r => r.json())
-      .then(data => { 
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+      .then(data => { setStats(data); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
-  const s = data?.stats;
-  const charts = data?.charts || {};
-  const recent = data?.recent || {};
+  const s = stats?.stats;
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <AdminSidebar />
 
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 overflow-y-auto">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between shrink-0">
+        <div className="bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between sticky top-0 z-10">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-400 text-sm">{new Date().toLocaleDateString("en", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
@@ -90,8 +82,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-8 space-y-8">
+        <div className="p-8 space-y-8">
           {/* Stats Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard icon={FaCalendarAlt} title="Today's Reservations" value={s?.todayReservations ?? "—"} sub={`${s?.pendingReservations ?? 0} pending`} color="bg-blue-500" delay={0} />
@@ -114,7 +105,7 @@ export default function AdminDashboard() {
                 <span className="text-xs bg-[#800020]/10 text-[#800020] px-3 py-1 rounded-full font-medium">This Week</span>
               </div>
               <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={charts.dailyRevenue || mockRevenue}>
+                <LineChart data={stats?.dailyRevenue?.length ? stats.dailyRevenue : mockRevenue}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
                   <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#9ca3af" }} />
                   <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} />
@@ -138,7 +129,7 @@ export default function AdminDashboard() {
               <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
                   <Pie
-                    data={charts.ordersByStatus?.length ? charts.ordersByStatus.map((s: any) => ({ name: s.status, value: s._count.status })) : [
+                    data={stats?.ordersByStatus?.length ? stats.ordersByStatus.map((s: any) => ({ name: s.status, value: s._count.status })) : [
                       { name: "PENDING", value: 12 }, { name: "PREPARING", value: 8 },
                       { name: "DELIVERED", value: 34 }, { name: "CANCELLED", value: 3 }
                     ]}
@@ -177,7 +168,7 @@ export default function AdminDashboard() {
                 <a href="/admin/orders" className="text-[#800020] text-xs font-medium hover:underline">View all →</a>
               </div>
               <div className="divide-y divide-gray-50">
-                {(recent.orders || []).slice(0, 5).map((order: any) => (
+                {(stats?.recentOrders || []).slice(0, 5).map((order: any) => (
                   <div key={order.id} className="flex items-center justify-between px-6 py-3">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
@@ -191,7 +182,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-                {!recent.orders?.length && (
+                {!stats?.recentOrders?.length && (
                   <p className="text-center text-gray-400 text-sm py-8">No recent orders</p>
                 )}
               </div>
@@ -209,7 +200,7 @@ export default function AdminDashboard() {
                 <a href="/admin/reservations" className="text-[#800020] text-xs font-medium hover:underline">View all →</a>
               </div>
               <div className="divide-y divide-gray-50">
-                {(recent.reservations || []).slice(0, 5).map((res: any) => (
+                {(stats?.recentReservations || []).slice(0, 5).map((res: any) => (
                   <div key={res.id} className="flex items-center justify-between px-6 py-3">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{res.name}</p>
@@ -223,12 +214,11 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-                {!recent.reservations?.length && (
+                {!stats?.recentReservations?.length && (
                   <p className="text-center text-gray-400 text-sm py-8">No upcoming reservations</p>
                 )}
               </div>
             </motion.div>
-          </div>
           </div>
         </div>
       </main>

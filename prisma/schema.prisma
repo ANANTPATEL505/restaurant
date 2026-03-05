@@ -17,6 +17,31 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+}
+
+model Table {
+  id           String        @id @default(cuid())
+  number       Int           @unique
+  capacity     Int           @default(4)
+  location     String        @default("Indoor")
+  status       TableStatus   @default(AVAILABLE)
+  reservations Reservation[]
+  orders       Order[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+}
+
 model MenuItem {
   id          String      @id @default(cuid())
   name        String
@@ -28,9 +53,9 @@ model MenuItem {
   featured    Boolean     @default(false)
   spicy       Boolean     @default(false)
   veg         Boolean     @default(true)
+  orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  orderItems  OrderItem[]
 }
 
 model Reservation {
@@ -42,9 +67,19 @@ model Reservation {
   guests    Int
   message   String?
   status    ReservationStatus @default(PENDING)
+  tableId   String?
+  table     Table?            @relation(fields: [tableId], references: [id])
   tableNo   Int?
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
 }
 
 model Order {
@@ -55,28 +90,42 @@ model Order {
   email        String?
   type         OrderType   @default(DINE_IN)
   status       OrderStatus @default(PENDING)
-  paymentMethod OrderPaymentMethod @default(CARD)
-  paymentRef   String?
-  deliveryAddress Json?
+  items        OrderItem[]
   subtotal     Float
   tax          Float
   total        Float
   notes        String?
+  tableId      String?
+  table        Table?      @relation(fields: [tableId], references: [id])
   tableNo      Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  items        OrderItem[]
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
 }
 
 model OrderItem {
   id         String   @id @default(cuid())
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId    String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
   menuItemId String
   qty        Int
   price      Float
   name       String
-  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model GalleryImage {
@@ -134,39 +183,4 @@ model SiteSettings {
   socialLinks    Json?
   heroImage      String?
   aboutText      String?
-}
-
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  STAFF
-}
-
-enum ReservationStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-  NO_SHOW
-}
-
-enum OrderType {
-  DINE_IN
-  TAKEAWAY
-  DELIVERY
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PREPARING
-  READY
-  DELIVERED
-  CANCELLED
-}
-
-enum OrderPaymentMethod {
-  CARD
-  UPI
-  CASH
 }

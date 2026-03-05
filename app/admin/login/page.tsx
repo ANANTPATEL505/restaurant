@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaUtensils, FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -13,7 +13,6 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +26,7 @@ export default function AdminLoginPage() {
     });
 
     if (res?.ok) {
-      const callbackUrl = searchParams.get("callbackUrl");
-      const safeDestination = callbackUrl && callbackUrl.startsWith("/admin") ? callbackUrl : "/admin";
-      router.push(safeDestination);
+      router.push("/admin");
     } else {
       setError("Invalid email or password.");
     }

@@ -13,24 +13,15 @@ export default function SmoothScroll({
   const isAdminRoute = pathname?.startsWith("/admin");
 
   useEffect(() => {
-    const clearLenisClasses = () => {
-      document.documentElement.classList.remove(
-        "lenis",
-        "lenis-smooth",
-        "lenis-stopped",
-        "lenis-scrolling",
-      );
-    };
-
-    if (isAdminRoute) {
-      clearLenisClasses();
-      return;
-    }
+    if (isAdminRoute) return;
 
     const lenis = new Lenis({
-      duration: 1,        // smoothness time
+      duration: 1,
       smoothWheel: true,
     });
+
+    // ⭐ expose globally
+    (window as any).lenis = lenis;
 
     let rafId = 0;
 
@@ -44,7 +35,7 @@ export default function SmoothScroll({
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
-      clearLenisClasses();
+      delete (window as any).lenis;
     };
   }, [isAdminRoute]);
 

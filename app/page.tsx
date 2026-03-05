@@ -7,6 +7,7 @@ import { useState } from "react";
 import type { Dayjs } from "dayjs";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function Home() {
 
@@ -786,74 +787,7 @@ export default function Home() {
 					</div>
 				</section>
 
-				<footer className="bg-[#800020] px-6 md:px-20 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-white">
-
-
-					<div className="flex flex-col gap-6 text-lg font-bold">
-						OPEN HOURS
-						<div className="flex gap-10 font-normal  text-sm">
-							<div className="flex flex-col gap-2">
-								<a>MONDAY</a>
-								<a>TUESDAY</a>
-								<a>WEDNESDAY</a>
-								<a>THURSDAY</a>
-								<a>FRIDAY</a>
-								<a>SATURDAY</a>
-								<a>SUNDAY</a>
-							</div>
-							<div className="flex flex-col gap-2">
-								<a>10 AM - 10 PM</a>
-								<a>10 AM - 10 PM</a>
-								<a>10 AM - 10 PM</a>
-								<a>10 AM - 10 PM</a>
-								<a>10 AM - 11 PM</a>
-								<a>10 AM - 11 PM</a>
-								<a>10 AM - 9 PM</a>
-							</div>
-						</div>
-					</div>
-
-					<div className="flex md:flex-col  text-lg md:gap-7 gap-12 font-bold ">
-						<div className="h-1/2 gap-4 flex flex-col">
-							<div className="">CONTACT US</div>
-							<div className="flex flex-col gap-2 font-normal text-sm">
-								<a>anant3163@gmail.com</a>
-								<a>+91 1234567890</a>
-							</div>
-						</div>
-
-						<div className="h-1/2 gap-4 flex flex-col">
-							<div>SOCIALS</div>
-							<div className="flex gap-4 font-normal text-sm">
-								<img src="/whatsapp.png" className="h-5 object-contain" />
-								<img src="/facebook.png" className="h-5 object-contain" />
-								<img src="/instagram.png" className="h-5 object-contain" />
-								<img src="/twitter.png" className="h-5 object-contain" />
-							</div>
-						</div>
-					</div>
-
-					<div className="flex flex-col text-lg gap-4 font-bold ">
-						<div>ADDRESS</div>
-						<div className="flex flex-col gap-2 font-normal text-sm">
-							<a>123 Main Street</a>
-							<a>City Road, Town</a>
-							<a>Surat, Gujarat</a>
-							<a>ZIP 394107</a>
-						</div>
-					</div>
-
-					<div className="h-64 md:h-full w-full rounded-2xl"
-					>
-						<iframe
-							className="h-full w-full rounded-2xl"
-							src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4686.560615867984!2d72.84078136320618!3d21.203050738231845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04ef9dc913593%3A0x96106052132786c3!2sSurat!5e0!3m2!1sen!2sin!4v1770273457727!5m2!1sen!2sin"
-							loading="lazy"
-							referrerPolicy="no-referrer-when-downgrade"
-						/>
-					</div>
-
-				</footer>
+				<Footer/>
 
 			</LocalizationProvider>
 		</main>

@@ -272,16 +272,16 @@ export default function MenuPage() {
                                         <p>Your cart is empty</p>
                                     </div>
                                 ) : cart.map(item => (
-                                    <div key={item.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                                    <div key={item.id} className="flex items-center gap-4 p-4 bg-gray-50 text-[#800020] rounded-2xl">
                                         <img src={item.image} alt={item.name} className="w-14 h-14 rounded-xl object-cover" onError={(e: any) => { e.target.src = "/web2.jpg"; }} />
                                         <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-gray-900 text-sm truncate">{item.name}</p>
                                             <p className="text-[#800020] text-sm font-bold">₹{item.price}</p>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 border border-gray-300 rounded-lg flex items-center justify-center text-sm hover:border-[#800020]">−</button>
+                                            <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 border border-gray-300 rounded-lg flex items-center text-[#800020] justify-center text-sm hover:border-[#800020]">−</button>
                                             <span className="w-6 text-center text-sm font-medium">{item.qty}</span>
-                                            <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 border border-gray-300 rounded-lg flex items-center justify-center text-sm hover:border-[#800020]">+</button>
+                                            <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 border border-gray-300 rounded-lg flex text-[#800020] items-center justify-center text-sm hover:border-[#800020]">+</button>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm font-bold text-gray-900">₹{item.price * item.qty}</p>
@@ -294,10 +294,10 @@ export default function MenuPage() {
                             </div>
 
                             {cart.length > 0 && (
-                                <div className="px-6 py-6 border-t space-y-4">
+                                <div className="px-6 py-6 border-t space-y-4 text-[#800020]">
                                     <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>₹{total}</span></div>
-                                        <div className="flex justify-between text-gray-500"><span>GST (5%)</span><span>₹{(total * 0.05).toFixed(0)}</span></div>
+                                        <div className="flex justify-between "><span>Subtotal</span><span>₹{total}</span></div>
+                                        <div className="flex justify-between "><span>GST (5%)</span><span>₹{(total * 0.05).toFixed(0)}</span></div>
                                         <div className="flex justify-between font-bold text-gray-900 text-base pt-2 border-t">
                                             <span>Total</span><span>₹{(total * 1.05).toFixed(0)}</span>
                                         </div>
