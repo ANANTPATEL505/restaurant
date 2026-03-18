@@ -18,7 +18,6 @@ const navItems = [
   { href: "/admin/orders", label: "Orders", icon: FaShoppingBag },
   { href: "/admin/gallery", label: "Gallery", icon: FaImages },
   { href: "/admin/events", label: "Events", icon: FaCalendarCheck },
-  { href: "/admin/reviews", label: "Reviews", icon: FaStar },
   { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
   { href: "/admin/messages", label: "Messages", icon: FaEnvelope },
 ];
