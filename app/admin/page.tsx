@@ -54,6 +54,11 @@ function StatCard({ icon: Icon, title, value, sub, color, delay }: any) {
 }
 
 export default function AdminDashboard() {
+
+  type Status = {
+  dailyRevenue: { date: string; revenue: number }[]
+} 
+const [status, setStatus] = useState<Status | null>(null)
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
