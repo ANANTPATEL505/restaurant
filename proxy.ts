@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 const ADMIN_LOGIN_PATH = "/admin/login";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
 
@@ -16,7 +16,8 @@ export async function middleware(req: NextRequest) {
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
-  const isLoginPage = pathname === ADMIN_LOGIN_PATH || pathname === `${ADMIN_LOGIN_PATH}/`;
+  const isLoginPage =
+    pathname === ADMIN_LOGIN_PATH || pathname === `${ADMIN_LOGIN_PATH}/`;
 
   if (!token && !isLoginPage) {
     const loginUrl = req.nextUrl.clone();
