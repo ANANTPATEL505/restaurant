@@ -87,7 +87,7 @@ export default function Home() {
 				<section className="relative w-full  overflow-hidden">
 
 					<Parallax speed={-20} className="absolute inset-0 h-screen">
-						<img src="/temp.png" className="w-full h-full object-cover" />
+						<img src="/cafe.jpg" className="w-full h-full object-cover" />
 					</Parallax>
 
 					<div className="relative z-20 h-screen flex items-center justify-center text-center px-4">
